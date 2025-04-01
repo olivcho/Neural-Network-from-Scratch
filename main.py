@@ -47,8 +47,43 @@ class NeuralNetwork:
                 error = MSE(y, out_o1)
 
                 # Backprop
-                
+                # w1h1
+                w1_dLdy = -2 * (y - out_o1)
+                w1_dydh = self.w5 * (out_o1 * (1 - out_o1))
+                w1_dhdw = x[0] * (out_h1 * (1 - out_h1))
+                w1_grad = w1_dLdy * w1_dydh * w1_dhdw
+                self.w1 -= learning_rate * (w1_grad)
+                # w2h1
+                # b1h1
+
+                # w3h2
+                # w4h2
+                # b2h2
+
+                # w5o1
+                # w6o1
+                # b3o1
+
                 pass
+
+# Backprop -- change in loss function with respect to weight 1
+# dL/dw_1 = dL/dy * dy/dh_1 * dh_1/dw_1
+# Recall that y = (1-y_pred)^2 by the MSE formula for one point
+# Sigmoid: f(x) = 1/(1+exp(-x))
+# Derivative: f'(x) = f(x) * (1-f(x))
+
+# Example usage of backprop for previous NN example
+
+dldy = -2 * (1 - o1[2]) # chain rule
+dydh1 = 0.5 * (sigmoid(o1[2]) * (1 - sigmoid(o1[2]))) # chain rule on sigmoid function for o1
+dh1dw1 = inputs[0] * (sigmoid(o1[0]) * (1 - sigmoid(o1[0]))) # chain rule on sigmoid function for h1
+
+dldw = dldy * dydh1 * dh1dw1
+print(f"Backprop: {dldw}")
+
+
+
+
 
 def MSE(y_true, y_pred): # y_true and y_pred are numpy arrays with the same length
     return ((y_true - y_pred) ** 2).mean()
