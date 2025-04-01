@@ -12,3 +12,5 @@ nn = NeuralNetwork()
 nn.train(data, labels)
 prediction = nn.feedforward(np.array([x,y])
 ```
+
+## Backpropagation Calculations
