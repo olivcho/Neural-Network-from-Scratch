@@ -21,7 +21,7 @@ print(f"2-Input Neuron Output: {n.feedforward(inputs)}") # 0.999664649
 
 class NeuralNetwork:
     def __init__(self):
-        weights = np.array([0, 1]) # Assign all neurons the same weights
+        weights = np.array([0.5, 0.5]) # Assign all neurons the same weights
         bias = 0 # Assign all neurons the same bias
 
         self.h1 = Neuron(weights, bias)
@@ -33,18 +33,35 @@ class NeuralNetwork:
         out_h2 = self.h2.feedforward(inputs)
         out_o1 = self.o1.feedforward([out_h1, out_h2])
 
-        return out_o1
-    
+        return out_h1, out_h2, out_o1 # out_h1 = out_h2 when weights and biases are the same
+
 # Example usage for neural network with 1 hidden layer and 2 neurons
 inputs = np.array([2, 3])
 
 n = NeuralNetwork()
-print(f"Neuron Network Output: {n.feedforward(inputs)}")
+o1 = np.float64(n.feedforward(inputs))
+print(f"Neuron Network Output: {o1[2]}")
 
-# MSE Loss Function
+# MSE loss function
 def MSE(y_true, y_pred): # y_true and y_pred are numpy arrays with the same length
     return ((y_true - y_pred) ** 2).mean()
 
 # Example usage of MSE
 print(MSE(np.array([1, 1, 0, 0]), np.array([1, 0, 0, 0])))
 
+# Backprop -- change in loss function with respect to weight 1
+# dL/dw_1 = dL/dy * dy/dh_1 * dh_1/dw_1
+# Recall that y = (1-y_pred)^2 by the MSE formula for one point
+# Sigmoid: f(x) = 1/(1+exp(-x))
+# Derivative: f'(x) = f(x) * (1-f(x))
+
+# Example usage of backprop for previous NN example
+
+dldy = -2 * (1 - o1[2]) # chain rule
+dydh1 = 0.5 * (sigmoid(o1[2]) * (1 - sigmoid(o1[2]))) # chain rule on sigmoid function for o1
+dh1dw1 = inputs[0] * (sigmoid(o1[0]) * (1 - sigmoid(o1[0]))) # chain rule on sigmoid function for h1
+
+dldw = dldy * dydh1 * dh1dw1
+print(f"Backprop: {dldw}")
+
+# Training - Stochastic Gradient Descent
