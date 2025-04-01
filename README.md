@@ -1,7 +1,7 @@
 # Neural Network Implementation from Scratch
 
 Features:
-- 2-2-1 architeecture (2 inputs, 2 hidden neurons, 1 output)
+- 2-2-1 architecture (2 inputs, 2 hidden neurons, 1 output)
 - Sigmoid activation function
 - MSE loss
 - Manual backprop
