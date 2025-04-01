@@ -46,9 +46,8 @@ class NeuralNetwork:
                 # Calculate error
                 error = MSE(y, out_o1)
 
-                # Backward pass
-                # Calculate gradients
-                # Update weights and biases
+                # Backprop
+                
                 pass
 
 def MSE(y_true, y_pred): # y_true and y_pred are numpy arrays with the same length
