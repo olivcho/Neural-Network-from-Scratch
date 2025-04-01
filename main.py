@@ -41,3 +41,10 @@ inputs = np.array([2, 3])
 n = NeuralNetwork()
 print(f"Neuron Network Output: {n.feedforward(inputs)}")
 
+# MSE Loss Function
+def MSE(y_true, y_pred): # y_true and y_pred are numpy arrays with the same length
+    return ((y_true - y_pred) ** 2).mean()
+
+# Example usage of MSE
+print(MSE(np.array([1, 1, 0, 0]), np.array([1, 0, 0, 0])))
+
