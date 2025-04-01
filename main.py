@@ -24,6 +24,9 @@ class NeuralNetwork:
         self.b2 = np.random.normal()
         self.b3 = np.random.normal()
 
+        self.update_neurons()
+    
+    def update_neurons(self):
         self.h1 = Neuron([self.w1, self.w2], self.b1) # output of h1
         self.h2 = Neuron([self.w3, self.w4], self.b2) # output of h2
         self.o1 = Neuron([self.w5, self.w6], self.b3) # output of o1 (final output)
@@ -35,16 +38,19 @@ class NeuralNetwork:
 
         return out_o1
 
-    def train(self, data, labels, epochs=1000, learning_rate=0.01):
+    def train(self, data, labels, epochs=10000, learning_rate=0.01):
         for epoch in range(epochs):
+            loss = 0
+            
             for x, y in zip(data, labels):
                 # Forward pass
                 out_h1 = self.h1.feedforward(x)
                 out_h2 = self.h2.feedforward(x)
                 out_o1 = self.o1.feedforward([out_h1, out_h2])
 
-                # Calculate error
+                # Calculate error for this sample
                 error = MSE(y, out_o1)
+                loss += error
 
                 # Backprop
                 # w1h1
@@ -109,15 +115,64 @@ class NeuralNetwork:
                 self.w6 -= learning_rate * w6_grad
                 self.b3 -= learning_rate * b3_grad
 
-                if epoch % 10 == 0:
-                    loss = MSE(labels, out_o1)
-                    print("Epoch %d loss: %.3f" % (epoch, loss))
+                self.update_neurons()
+
+            if epoch % 10 == 0:
+                print("Epoch %d loss: %.3f" % (epoch, loss))
 
 def MSE(y_true, y_pred): # y_true and y_pred are numpy arrays with the same length
     return ((y_true - y_pred) ** 2).mean()
 
-data = np.array([[0, 3], [5, 12], [-5, 0], [1, 5]])
-labels = np.array([[0], [1], [0], [1]])
+# Create data points array
+data = np.array([
+    [4.2, -3.1],
+    [-2.5, 5.8],
+    [6.7, 7.2],
+    [-8.1, -2.3],
+    [0.5, 1.8],
+    [-5.4, 4.2],
+    [3.1, -7.5],
+    [-1.2, -4.6],
+    [7.8, 2.5],
+    [-4.3, -6.2],
+    [2.9, 8.1],
+    [-7.6, 3.4],
+    [1.7, -5.9],
+    [-3.8, -1.6],
+    [5.2, 6.3],
+    [-6.7, -8.4],
+    [8.5, -2.7],
+    [-9.3, 7.1],
+    [0.3, -8.9],
+    [9.6, 9.2]
+])
+
+# Create corresponding labels
+# Pattern: label=1 if (x^2 + y^2 < 36) or (x>2 and y>2), else label=0
+labels = np.array([
+    0,  # [4.2, -3.1]
+    0,  # [-2.5, 5.8]
+    1,  # [6.7, 7.2]
+    0,  # [-8.1, -2.3]
+    1,  # [0.5, 1.8]
+    0,  # [-5.4, 4.2]
+    0,  # [3.1, -7.5]
+    0,  # [-1.2, -4.6]
+    1,  # [7.8, 2.5]
+    0,  # [-4.3, -6.2]
+    1,  # [2.9, 8.1]
+    0,  # [-7.6, 3.4]
+    0,  # [1.7, -5.9]
+    1,  # [-3.8, -1.6]
+    1,  # [5.2, 6.3]
+    0,  # [-6.7, -8.4]
+    0,  # [8.5, -2.7]
+    0,  # [-9.3, 7.1]
+    0,  # [0.3, -8.9]
+    1   # [9.6, 9.2]
+])
 
 nn = NeuralNetwork()
 nn.train(data, labels)
+
+print(nn.feedforward(np.array([9.6, 9.2])))
