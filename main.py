@@ -13,25 +13,24 @@ class Neuron:
         return sigmoid(total)
 
 class NeuralNetwork:
-    def __init__(self):
-        self.w1 = np.random.normal()
-        self.w2 = np.random.normal()
-        self.w3 = np.random.normal()
-        self.w4 = np.random.normal()
-        self.w5 = np.random.normal()
-        self.w6 = np.random.normal()
-        self.b1 = np.random.normal()
-        self.b2 = np.random.normal()
-        self.b3 = np.random.normal()
+    def __init__(self, layer_sizes): # Layer_sizes example looks like [4, 5, 1] which creates a network with 4 input neurons, 5 hidden neurons and 1 output neuron
+        self.layer_sizes = layer_sizes
+        self.num_layers = len(layer_sizes)
+
+        self.weights = []
+        self.biases = []
+
+        for i in range(1, self.num_layers):
+            # Weights generated with Xavier initialization
+            weight = np.random.normal(0, 1/np.sqrt((self.layer_sizes[i-1] + self.layer_sizes[i])/2))
+            self.weights.append(weight)
+
+            bias = np.random.normal(0, 1/np.sqrt((self.layer_sizes[i-1] + self.layer_sizes[i])/2))
+            self.biases.append(bias)
 
         self.update_neurons()
-    
-    def update_neurons(self):
-        self.h1 = Neuron([self.w1, self.w2], self.b1) # output of h1
-        self.h2 = Neuron([self.w3, self.w4], self.b2) # output of h2
-        self.o1 = Neuron([self.w5, self.w6], self.b3) # output of o1 (final output)
 
-    def feedforward(self, inputs):
+    def feedforward(self, inputs): # Inputs are given as a column vector (shape: input_size x 1)
         out_h1 = self.h1.feedforward(inputs)
         out_h2 = self.h2.feedforward(inputs)
         out_o1 = self.o1.feedforward([out_h1, out_h2])
